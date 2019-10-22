@@ -1,0 +1,10 @@
+F:\000IMU\大三\Csharp\HW\MoveBoxes\bin\Debug\MoveBoxes.exe.config
+F:\000IMU\大三\Csharp\HW\MoveBoxes\bin\Debug\MoveBoxes.exe
+F:\000IMU\大三\Csharp\HW\MoveBoxes\bin\Debug\MoveBoxes.pdb
+F:\000IMU\大三\Csharp\HW\MoveBoxes\obj\Debug\MoveBoxes.csprojAssemblyReference.cache
+F:\000IMU\大三\Csharp\HW\MoveBoxes\obj\Debug\MoveBoxes.Form1.resources
+F:\000IMU\大三\Csharp\HW\MoveBoxes\obj\Debug\MoveBoxes.Properties.Resources.resources
+F:\000IMU\大三\Csharp\HW\MoveBoxes\obj\Debug\MoveBoxes.csproj.GenerateResource.cache
+F:\000IMU\大三\Csharp\HW\MoveBoxes\obj\Debug\MoveBoxes.csproj.CoreCompileInputs.cache
+F:\000IMU\大三\Csharp\HW\MoveBoxes\obj\Debug\MoveBoxes.exe
+F:\000IMU\大三\Csharp\HW\MoveBoxes\obj\Debug\MoveBoxes.pdb
