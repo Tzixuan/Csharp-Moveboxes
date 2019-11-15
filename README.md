@@ -1,4 +1,4 @@
-# Csharp-Moveboxes
+﻿# Csharp-Moveboxes
 ***语言：C#***
 * 使用Bitmap（位图）来实现地图人物的绘制
 * 读取地图文件显示地图
@@ -15,4 +15,5 @@
 * 接收用户输入的方向数据 
 * 判断小人移动的方向 
 * 判断小人将要移动的位置是否是路，重新调整小人与箱子还有路的位置 
-
+修改说明
+https://blog.csdn.net/qq_41916089/article/details/103091470

@@ -1,0 +1,284 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>推箱子修改</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+
+<body class="stackedit">
+  <div class="stackedit__html"><h2><a id="_0"></a>推箱子修改</h2>
+<p><em>以下代码仅为部分代码举例，具体请见项目。</em><br>
+<strong>1. 在静态类constant中定义所有数字常量，数字常量名全部为大写字母。</strong></p>
+<pre><code class="prism language-cpp"><span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">constant</span>
+    <span class="token punctuation">{</span>
+        <span class="token comment">//空地/墙/箱子</span>
+        <span class="token keyword">public</span> <span class="token keyword">const</span> <span class="token keyword">int</span> BLANK <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">,</span>WALL <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">,</span>BOX <span class="token operator">=</span> <span class="token number">3</span><span class="token punctuation">,</span> DESTINATION <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">,</span> PEOPLE <span class="token operator">=</span> <span class="token number">6</span><span class="token punctuation">;</span>
+        <span class="token comment">//箱子与目的地重合/人与目的地重合</span>
+        <span class="token keyword">public</span> <span class="token keyword">const</span> <span class="token keyword">int</span> BOX_DES <span class="token operator">=</span> <span class="token number">7</span><span class="token punctuation">,</span>PEO_DES<span class="token operator">=</span><span class="token number">9</span><span class="token punctuation">;</span>
+        <span class="token keyword">public</span> <span class="token keyword">const</span> <span class="token keyword">int</span> EDGE <span class="token operator">=</span> <span class="token number">30</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+</code></pre>
+<p>不要“从天上掉下来一个数”，修改前后的部分代码对比：<br>
+<em>修改前</em></p>
+<pre><code class="prism language-cpp"> pictureBox1<span class="token punctuation">.</span>Width <span class="token operator">=</span> myArray<span class="token punctuation">.</span><span class="token function">GetLength</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token number">30</span><span class="token punctuation">;</span>
+</code></pre>
+<pre><code class="prism language-cpp">  <span class="token keyword">if</span> <span class="token punctuation">(</span>myArray<span class="token punctuation">[</span>i<span class="token punctuation">,</span> j<span class="token punctuation">]</span> <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">)</span>
+  	<span class="token punctuation">{</span>
+    	image <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token function">Bitmap</span><span class="token punctuation">(</span><span class="token string">"wall.png"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        g<span class="token punctuation">.</span><span class="token function">DrawImage</span><span class="token punctuation">(</span>image<span class="token punctuation">,</span> j <span class="token operator">*</span> <span class="token number">30</span><span class="token punctuation">,</span> i <span class="token operator">*</span> <span class="token number">30</span><span class="token punctuation">,</span> <span class="token number">30</span><span class="token punctuation">,</span> <span class="token number">30</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+</code></pre>
+<p><em>修改后</em></p>
+<pre><code class="prism language-cpp"> pictureBox1<span class="token punctuation">.</span>Width <span class="token operator">=</span> myArray<span class="token punctuation">.</span><span class="token function">GetLength</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">*</span> constant<span class="token punctuation">.</span>EDGE<span class="token punctuation">;</span>
+</code></pre>
+<pre><code class="prism language-cpp">  <span class="token keyword">if</span> <span class="token punctuation">(</span>myArray<span class="token punctuation">[</span>i<span class="token punctuation">,</span> j<span class="token punctuation">]</span> <span class="token operator">==</span> constant<span class="token punctuation">.</span>WALL<span class="token punctuation">)</span>
+     <span class="token punctuation">{</span>
+         image <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token function">Bitmap</span><span class="token punctuation">(</span><span class="token string">"wall.png"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+          g<span class="token punctuation">.</span><span class="token function">DrawImage</span><span class="token punctuation">(</span>image<span class="token punctuation">,</span> j <span class="token operator">*</span> constant<span class="token punctuation">.</span>EDGE<span class="token punctuation">,</span> i <span class="token operator">*</span> constant<span class="token punctuation">.</span>EDGE<span class="token punctuation">,</span> constant<span class="token punctuation">.</span>EDGE<span class="token punctuation">,</span> constant<span class="token punctuation">.</span>EDGE<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+</code></pre>
+<pre><code class="prism language-cpp"> <span class="token keyword">if</span> <span class="token punctuation">(</span>myArray<span class="token punctuation">[</span>next_row<span class="token punctuation">,</span> next_col<span class="token punctuation">]</span> <span class="token operator">==</span> constant<span class="token punctuation">.</span>BLANK<span class="token punctuation">)</span>
+            <span class="token punctuation">{</span>
+                myArray<span class="token punctuation">[</span>next_row<span class="token punctuation">,</span> next_col<span class="token punctuation">]</span> <span class="token operator">=</span> constant<span class="token punctuation">.</span>WORKER<span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>myArray<span class="token punctuation">[</span>now_row<span class="token punctuation">,</span> now_col<span class="token punctuation">]</span> <span class="token operator">==</span> constant<span class="token punctuation">.</span>WORKER<span class="token punctuation">)</span>
+                <span class="token punctuation">{</span>
+                    myArray<span class="token punctuation">[</span>now_row<span class="token punctuation">,</span> now_col<span class="token punctuation">]</span> <span class="token operator">=</span> constant<span class="token punctuation">.</span>BLANK<span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+                <span class="token keyword">else</span>
+                <span class="token punctuation">{</span>
+                    myArray<span class="token punctuation">[</span>now_row<span class="token punctuation">,</span> now_col<span class="token punctuation">]</span> <span class="token operator">=</span> constant<span class="token punctuation">.</span>DESTINATION<span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+            <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>myArray<span class="token punctuation">[</span>next_row<span class="token punctuation">,</span> next_col<span class="token punctuation">]</span> <span class="token operator">==</span> constant<span class="token punctuation">.</span>BOX <span class="token operator">&amp;&amp;</span> myArray<span class="token punctuation">[</span>to_row<span class="token punctuation">,</span> to_col<span class="token punctuation">]</span> <span class="token operator">==</span> constant<span class="token punctuation">.</span>BLANK<span class="token punctuation">)</span>
+            <span class="token punctuation">{</span>
+                myArray<span class="token punctuation">[</span>next_row<span class="token punctuation">,</span> next_col<span class="token punctuation">]</span> <span class="token operator">=</span> constant<span class="token punctuation">.</span>WORKER<span class="token punctuation">;</span>
+                myArray<span class="token punctuation">[</span>to_row<span class="token punctuation">,</span> to_col<span class="token punctuation">]</span> <span class="token operator">=</span> constant<span class="token punctuation">.</span>BOX<span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>myArray<span class="token punctuation">[</span>now_row<span class="token punctuation">,</span> now_col<span class="token punctuation">]</span> <span class="token operator">==</span> constant<span class="token punctuation">.</span>WORKER<span class="token punctuation">)</span>
+                <span class="token punctuation">{</span>
+                    myArray<span class="token punctuation">[</span>now_row<span class="token punctuation">,</span> now_col<span class="token punctuation">]</span> <span class="token operator">=</span> constant<span class="token punctuation">.</span>BLANK<span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+                <span class="token keyword">else</span>
+                <span class="token punctuation">{</span>
+                    myArray<span class="token punctuation">[</span>now_row<span class="token punctuation">,</span> now_col<span class="token punctuation">]</span> <span class="token operator">=</span> constant<span class="token punctuation">.</span>DESTINATION<span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+</code></pre>
+<p><strong>2.重复代码的修改</strong><br>
+利用逻辑上的规律，给新的变量赋不同的，使用相同的语句。<br>
+<em>修改前</em></p>
+<pre><code class="prism language-cpp"><span class="token keyword">if</span> <span class="token punctuation">(</span>myArray<span class="token punctuation">[</span>i<span class="token punctuation">,</span> j<span class="token punctuation">]</span> <span class="token operator">==</span> <span class="token number">3</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    image <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token function">Bitmap</span><span class="token punctuation">(</span><span class="token string">"box.png"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    g<span class="token punctuation">.</span><span class="token function">DrawImage</span><span class="token punctuation">(</span>image<span class="token punctuation">,</span> j <span class="token operator">*</span> <span class="token number">30</span><span class="token punctuation">,</span> i <span class="token operator">*</span> <span class="token number">30</span><span class="token punctuation">,</span> <span class="token number">30</span><span class="token punctuation">,</span> <span class="token number">30</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>myArray<span class="token punctuation">[</span>i<span class="token punctuation">,</span> j<span class="token punctuation">]</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    image <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token function">Bitmap</span><span class="token punctuation">(</span><span class="token string">"land.png"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    g<span class="token punctuation">.</span><span class="token function">DrawImage</span><span class="token punctuation">(</span>image<span class="token punctuation">,</span> j <span class="token operator">*</span> <span class="token number">30</span><span class="token punctuation">,</span> i <span class="token operator">*</span> <span class="token number">30</span><span class="token punctuation">,</span> <span class="token number">30</span><span class="token punctuation">,</span> <span class="token number">30</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>myArray<span class="token punctuation">[</span>i<span class="token punctuation">,</span> j<span class="token punctuation">]</span> <span class="token operator">==</span> <span class="token number">4</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    image <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token function">Bitmap</span><span class="token punctuation">(</span><span class="token string">"dest.png"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    g<span class="token punctuation">.</span><span class="token function">DrawImage</span><span class="token punctuation">(</span>image<span class="token punctuation">,</span> j <span class="token operator">*</span> <span class="token number">30</span><span class="token punctuation">,</span> i <span class="token operator">*</span> <span class="token number">30</span><span class="token punctuation">,</span> <span class="token number">30</span><span class="token punctuation">,</span> <span class="token number">30</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>myArray<span class="token punctuation">[</span>i<span class="token punctuation">,</span> j<span class="token punctuation">]</span> <span class="token operator">==</span> <span class="token number">9</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    image <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token function">Bitmap</span><span class="token punctuation">(</span><span class="token string">"WoD.png"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    g<span class="token punctuation">.</span><span class="token function">DrawImage</span><span class="token punctuation">(</span>image<span class="token punctuation">,</span> j <span class="token operator">*</span> <span class="token number">30</span><span class="token punctuation">,</span> i <span class="token operator">*</span> <span class="token number">30</span><span class="token punctuation">,</span> <span class="token number">30</span><span class="token punctuation">,</span> <span class="token number">30</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>myArray<span class="token punctuation">[</span>i<span class="token punctuation">,</span> j<span class="token punctuation">]</span> <span class="token operator">==</span> <span class="token number">7</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    image <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token function">Bitmap</span><span class="token punctuation">(</span><span class="token string">"BoD.png"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    g<span class="token punctuation">.</span><span class="token function">DrawImage</span><span class="token punctuation">(</span>image<span class="token punctuation">,</span> j <span class="token operator">*</span> <span class="token number">30</span><span class="token punctuation">,</span> i <span class="token operator">*</span> <span class="token number">30</span><span class="token punctuation">,</span> <span class="token number">30</span><span class="token punctuation">,</span> <span class="token number">30</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p><em>修改后</em><br>
+不使用数字常量，直接将数组中所存数字转换成字符串，修改图片地址</p>
+<pre><code class="prism language-cpp"><span class="token keyword">public</span> <span class="token keyword">static</span> string imgName <span class="token operator">=</span> <span class="token string">"1"</span><span class="token punctuation">;</span>
+<span class="token keyword">public</span> <span class="token keyword">static</span> string imgFileName <span class="token operator">=</span> imgName<span class="token operator">+</span><span class="token string">".png"</span><span class="token punctuation">;</span>
+</code></pre>
+<pre><code class="prism language-cpp">Image image <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token function">Bitmap</span><span class="token punctuation">(</span>imgFileName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> myArray<span class="token punctuation">.</span><span class="token function">GetLength</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> j <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> j <span class="token operator">&lt;</span> myArray<span class="token punctuation">.</span><span class="token function">GetLength</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span> j<span class="token operator">++</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        imgName <span class="token operator">=</span> myArray<span class="token punctuation">[</span>i<span class="token punctuation">,</span> j<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">ToString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        imgFileName <span class="token operator">=</span> imgName <span class="token operator">+</span> <span class="token string">".png"</span><span class="token punctuation">;</span>
+        image <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token function">Bitmap</span><span class="token punctuation">(</span>imgFileName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        g<span class="token punctuation">.</span><span class="token function">DrawImage</span><span class="token punctuation">(</span>image<span class="token punctuation">,</span> j <span class="token operator">*</span> constant<span class="token punctuation">.</span>EDGE<span class="token punctuation">,</span> i <span class="token operator">*</span> constant<span class="token punctuation">.</span>EDGE<span class="token punctuation">,</span> constant<span class="token punctuation">.</span>EDGE<span class="token punctuation">,</span> constant<span class="token punctuation">.</span>EDGE<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p><em>修改前</em><br>
+4个case 几乎重复分代码</p>
+<pre><code class="prism language-cpp">      myArray<span class="token punctuation">[</span>i<span class="token punctuation">,</span> j<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">4</span><span class="token punctuation">;</span>
+                        <span class="token punctuation">}</span>
+                    <span class="token punctuation">}</span>  
+                    <span class="token keyword">break</span><span class="token punctuation">;</span>
+                <span class="token keyword">case</span> Keys<span class="token punctuation">.</span>Left<span class="token operator">:</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>myArray<span class="token punctuation">[</span>i<span class="token punctuation">,</span> j <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span>
+                    <span class="token punctuation">{</span>
+                        myArray<span class="token punctuation">[</span>i<span class="token punctuation">,</span> j <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">6</span><span class="token punctuation">;</span>
+                        <span class="token keyword">if</span> <span class="token punctuation">(</span>myArray<span class="token punctuation">[</span>i<span class="token punctuation">,</span> j<span class="token punctuation">]</span> <span class="token operator">==</span> <span class="token number">6</span><span class="token punctuation">)</span>
+                        <span class="token punctuation">{</span>
+                            myArray<span class="token punctuation">[</span>i<span class="token punctuation">,</span> j<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+                        <span class="token punctuation">}</span>
+                        <span class="token keyword">else</span>
+                        <span class="token punctuation">{</span>
+                            myArray<span class="token punctuation">[</span>i<span class="token punctuation">,</span> j<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">4</span><span class="token punctuation">;</span>
+                        <span class="token punctuation">}</span>
+                    <span class="token punctuation">}</span>
+                    <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>myArray<span class="token punctuation">[</span>i<span class="token punctuation">,</span> j <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">==</span> <span class="token number">3</span> <span class="token operator">&amp;&amp;</span> myArray<span class="token punctuation">[</span>i<span class="token punctuation">,</span> j <span class="token operator">-</span> <span class="token number">2</span><span class="token punctuation">]</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span>
+                    <span class="token punctuation">{</span>
+                        myArray<span class="token punctuation">[</span>i<span class="token punctuation">,</span> j <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">6</span><span class="token punctuation">;</span>
+                        myArray<span class="token punctuation">[</span>i<span class="token punctuation">,</span> j <span class="token operator">-</span> <span class="token number">2</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">3</span><span class="token punctuation">;</span>
+                        <span class="token keyword">if</span> <span class="token punctuation">(</span>myArray<span class="token punctuation">[</span>i<span class="token punctuation">,</span> j<span class="token punctuation">]</span> <span class="token operator">==</span> <span class="token number">6</span><span class="token punctuation">)</span>
+                        <span class="token punctuation">{</span>
+                            myArray<span class="token punctuation">[</span>i<span class="token punctuation">,</span> j<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+                        <span class="token punctuation">}</span>
+                        <span class="token keyword">else</span>
+</code></pre>
+<p><em>修改后</em></p>
+<pre><code class="prism language-cpp"><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">,</span> j <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+            <span class="token keyword">int</span> now_row <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">,</span> now_col <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">,</span>next_row<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">,</span>next_col<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">,</span>to_row<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">,</span>to_col<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span>
+            <span class="token comment">//得到人的坐标</span>
+            <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> x <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> x <span class="token operator">&lt;</span> row_num<span class="token punctuation">;</span> x<span class="token operator">++</span><span class="token punctuation">)</span>
+            <span class="token punctuation">{</span>
+                <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> y <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> y <span class="token operator">&lt;</span> col_num<span class="token punctuation">;</span> y<span class="token operator">++</span><span class="token punctuation">)</span>
+                <span class="token punctuation">{</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>myArray<span class="token punctuation">[</span>x<span class="token punctuation">,</span> y<span class="token punctuation">]</span> <span class="token operator">==</span> constant<span class="token punctuation">.</span>WORKER <span class="token operator">||</span> myArray<span class="token punctuation">[</span>x<span class="token punctuation">,</span> y<span class="token punctuation">]</span> <span class="token operator">==</span> constant<span class="token punctuation">.</span>WOR_DES<span class="token punctuation">)</span>
+                    <span class="token punctuation">{</span>
+                        i <span class="token operator">=</span> x<span class="token punctuation">;</span>
+                        j <span class="token operator">=</span> y<span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+            <span class="token comment">//接收按键</span>
+            <span class="token keyword">switch</span> <span class="token punctuation">(</span>e<span class="token punctuation">.</span>KeyCode<span class="token punctuation">)</span>
+            <span class="token punctuation">{</span>
+                <span class="token keyword">case</span> Keys<span class="token punctuation">.</span>Up<span class="token operator">:</span> <span class="token punctuation">{</span> now_row <span class="token operator">=</span> i<span class="token punctuation">;</span> next_row <span class="token operator">=</span> i <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span>to_row <span class="token operator">=</span> i <span class="token operator">-</span> <span class="token number">2</span><span class="token punctuation">;</span> next_col<span class="token operator">=</span>now_col <span class="token operator">=</span> to_col <span class="token operator">=</span> j<span class="token punctuation">;</span> <span class="token keyword">break</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+                <span class="token keyword">case</span> Keys<span class="token punctuation">.</span>Left<span class="token operator">:</span> <span class="token punctuation">{</span> now_row<span class="token operator">=</span>next_row<span class="token operator">=</span>to_row <span class="token operator">=</span> i<span class="token punctuation">;</span> now_col <span class="token operator">=</span> j<span class="token punctuation">;</span> next_col <span class="token operator">=</span> j <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span>to_col <span class="token operator">=</span> j <span class="token operator">-</span> <span class="token number">2</span><span class="token punctuation">;</span> <span class="token keyword">break</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+                <span class="token keyword">case</span> Keys<span class="token punctuation">.</span>Down<span class="token operator">:</span> <span class="token punctuation">{</span> now_row <span class="token operator">=</span> i<span class="token punctuation">;</span> next_row <span class="token operator">=</span> i <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span> to_row <span class="token operator">=</span> i <span class="token operator">+</span> <span class="token number">2</span><span class="token punctuation">;</span> next_col <span class="token operator">=</span> now_col <span class="token operator">=</span> to_col <span class="token operator">=</span> j<span class="token punctuation">;</span> <span class="token keyword">break</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+                <span class="token keyword">case</span> Keys<span class="token punctuation">.</span>Right<span class="token operator">:</span> <span class="token punctuation">{</span> now_row <span class="token operator">=</span> next_row <span class="token operator">=</span> to_row <span class="token operator">=</span> i<span class="token punctuation">;</span> now_col <span class="token operator">=</span> j<span class="token punctuation">;</span> next_col <span class="token operator">=</span> j <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span> to_col <span class="token operator">=</span> j <span class="token operator">+</span> <span class="token number">2</span><span class="token punctuation">;</span> <span class="token keyword">break</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>myArray<span class="token punctuation">[</span>next_row<span class="token punctuation">,</span> next_col<span class="token punctuation">]</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span>
+            <span class="token punctuation">{</span>
+                myArray<span class="token punctuation">[</span>next_row<span class="token punctuation">,</span> next_col<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">6</span><span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>myArray<span class="token punctuation">[</span>now_row<span class="token punctuation">,</span> now_col<span class="token punctuation">]</span> <span class="token operator">==</span> <span class="token number">6</span><span class="token punctuation">)</span>
+                <span class="token punctuation">{</span>
+                    myArray<span class="token punctuation">[</span>now_row<span class="token punctuation">,</span> now_col<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+                <span class="token keyword">else</span>
+                <span class="token punctuation">{</span>
+                    myArray<span class="token punctuation">[</span>now_row<span class="token punctuation">,</span> now_col<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">4</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+            <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>myArray<span class="token punctuation">[</span>next_row<span class="token punctuation">,</span> next_col<span class="token punctuation">]</span> <span class="token operator">==</span> <span class="token number">3</span> <span class="token operator">&amp;&amp;</span> myArray<span class="token punctuation">[</span>to_row<span class="token punctuation">,</span> to_col<span class="token punctuation">]</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span>
+            <span class="token punctuation">{</span>
+                myArray<span class="token punctuation">[</span>next_row<span class="token punctuation">,</span> next_col<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">6</span><span class="token punctuation">;</span>
+                myArray<span class="token punctuation">[</span>to_row<span class="token punctuation">,</span> to_col<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">3</span><span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>myArray<span class="token punctuation">[</span>now_row<span class="token punctuation">,</span> now_col<span class="token punctuation">]</span> <span class="token operator">==</span> <span class="token number">6</span><span class="token punctuation">)</span>
+                <span class="token punctuation">{</span>
+                    myArray<span class="token punctuation">[</span>now_row<span class="token punctuation">,</span> now_col<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+                <span class="token keyword">else</span>
+                <span class="token punctuation">{</span>
+                    myArray<span class="token punctuation">[</span>now_row<span class="token punctuation">,</span> now_col<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">4</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+            <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>myArray<span class="token punctuation">[</span>next_row<span class="token punctuation">,</span> next_col<span class="token punctuation">]</span> <span class="token operator">==</span> <span class="token number">4</span><span class="token punctuation">)</span>
+            <span class="token punctuation">{</span>
+                myArray<span class="token punctuation">[</span>next_row<span class="token punctuation">,</span> next_col<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">9</span><span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>myArray<span class="token punctuation">[</span>now_row<span class="token punctuation">,</span> now_col<span class="token punctuation">]</span> <span class="token operator">==</span> <span class="token number">6</span><span class="token punctuation">)</span>
+                <span class="token punctuation">{</span>
+                    myArray<span class="token punctuation">[</span>now_row<span class="token punctuation">,</span> now_col<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+                <span class="token keyword">else</span>
+                <span class="token punctuation">{</span>
+                    myArray<span class="token punctuation">[</span>now_row<span class="token punctuation">,</span> now_col<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">4</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+            <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>myArray<span class="token punctuation">[</span>next_row<span class="token punctuation">,</span> next_col<span class="token punctuation">]</span> <span class="token operator">==</span> <span class="token number">7</span> <span class="token operator">&amp;&amp;</span> myArray<span class="token punctuation">[</span>to_row<span class="token punctuation">,</span> to_col<span class="token punctuation">]</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span>
+            <span class="token punctuation">{</span>
+                myArray<span class="token punctuation">[</span>next_row<span class="token punctuation">,</span> next_col<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">9</span><span class="token punctuation">;</span>
+                myArray<span class="token punctuation">[</span>to_row<span class="token punctuation">,</span> to_col<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">3</span><span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>myArray<span class="token punctuation">[</span>now_row<span class="token punctuation">,</span> now_col<span class="token punctuation">]</span> <span class="token operator">==</span> <span class="token number">6</span><span class="token punctuation">)</span>
+                <span class="token punctuation">{</span>
+                    myArray<span class="token punctuation">[</span>now_row<span class="token punctuation">,</span> now_col<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+                <span class="token keyword">else</span>
+                <span class="token punctuation">{</span>
+                    myArray<span class="token punctuation">[</span>now_row<span class="token punctuation">,</span> now_col<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">4</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+
+            <span class="token punctuation">}</span>
+            <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>myArray<span class="token punctuation">[</span>next_row<span class="token punctuation">,</span> next_col<span class="token punctuation">]</span> <span class="token operator">==</span> <span class="token number">3</span> <span class="token operator">&amp;&amp;</span> myArray<span class="token punctuation">[</span>to_row<span class="token punctuation">,</span> to_col<span class="token punctuation">]</span> <span class="token operator">==</span> <span class="token number">4</span><span class="token punctuation">)</span>
+            <span class="token punctuation">{</span>
+                myArray<span class="token punctuation">[</span>next_row<span class="token punctuation">,</span> next_col<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">6</span><span class="token punctuation">;</span>
+                myArray<span class="token punctuation">[</span>to_row<span class="token punctuation">,</span> to_col<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">7</span><span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>myArray<span class="token punctuation">[</span>now_row<span class="token punctuation">,</span> now_col<span class="token punctuation">]</span> <span class="token operator">==</span> <span class="token number">6</span><span class="token punctuation">)</span>
+                <span class="token punctuation">{</span>
+                    myArray<span class="token punctuation">[</span>now_row<span class="token punctuation">,</span> now_col<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+                <span class="token keyword">else</span>
+                <span class="token punctuation">{</span>
+                    myArray<span class="token punctuation">[</span>now_row<span class="token punctuation">,</span> now_col<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">4</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+            <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>myArray<span class="token punctuation">[</span>next_row<span class="token punctuation">,</span> next_col<span class="token punctuation">]</span> <span class="token operator">==</span> <span class="token number">7</span> <span class="token operator">&amp;&amp;</span> myArray<span class="token punctuation">[</span>to_row<span class="token punctuation">,</span> to_col<span class="token punctuation">]</span> <span class="token operator">==</span> <span class="token number">4</span><span class="token punctuation">)</span>
+            <span class="token punctuation">{</span>
+                myArray<span class="token punctuation">[</span>next_row<span class="token punctuation">,</span> next_col<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">9</span><span class="token punctuation">;</span>
+                myArray<span class="token punctuation">[</span>to_row<span class="token punctuation">,</span> to_col<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">7</span><span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>myArray<span class="token punctuation">[</span>now_row<span class="token punctuation">,</span> now_col<span class="token punctuation">]</span> <span class="token operator">==</span> <span class="token number">6</span><span class="token punctuation">)</span>
+                <span class="token punctuation">{</span>
+                    myArray<span class="token punctuation">[</span>now_row<span class="token punctuation">,</span> now_col<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+                <span class="token keyword">else</span>
+                <span class="token punctuation">{</span>
+                    myArray<span class="token punctuation">[</span>now_row<span class="token punctuation">,</span> now_col<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">4</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+</code></pre>
+<p><strong>3.变量命名规范化，将i、j等循环中使用的变量改为row、col，增强代码可读性</strong><br>
+<em>修改后</em></p>
+<pre><code class="prism language-cpp"><span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> row <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> row <span class="token operator">&lt;</span> myArray<span class="token punctuation">.</span><span class="token function">GetLength</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span> row<span class="token operator">++</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+   <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> col <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> col <span class="token operator">&lt;</span> myArray<span class="token punctuation">.</span><span class="token function">GetLength</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span> col<span class="token operator">++</span><span class="token punctuation">)</span>
+   <span class="token punctuation">{</span>
+   <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p><strong>4.使用卫语句</strong><br>
+抛出异常</p>
+<pre><code class="prism language-cpp"><span class="token keyword">try</span> <span class="token punctuation">{</span> txt <span class="token operator">=</span> File<span class="token punctuation">.</span><span class="token function">ReadAllLines</span><span class="token punctuation">(</span>FileName<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+            <span class="token keyword">catch</span> <span class="token punctuation">(</span>FileNotFoundException q<span class="token punctuation">)</span>
+            <span class="token punctuation">{</span>
+                MessageBox<span class="token punctuation">.</span><span class="token function">Show</span><span class="token punctuation">(</span><span class="token string">"找不到地图文件"</span><span class="token punctuation">,</span> <span class="token string">"提示"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token function">Close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">return</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token function">init_data</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p><strong>5.修改变量作用域</strong><br>
+全局变量放在最前面，仅在某方法内使用的放在方法体内。</p>
+<pre><code class="prism language-cpp"><span class="token comment">//图片文件名</span>
+        <span class="token keyword">public</span> <span class="token keyword">static</span> string imgName <span class="token operator">=</span> <span class="token string">"1"</span><span class="token punctuation">;</span>
+        <span class="token keyword">public</span> <span class="token keyword">static</span> string imgFileName <span class="token operator">=</span> imgName <span class="token operator">+</span> <span class="token string">".png"</span><span class="token punctuation">;</span>
+        <span class="token comment">//地图文件名</span>
+        <span class="token keyword">public</span> <span class="token keyword">static</span> string FileName <span class="token operator">=</span> <span class="token string">".\\map\\configurations.txt"</span><span class="token punctuation">;</span>
+        <span class="token keyword">private</span> string<span class="token punctuation">[</span><span class="token punctuation">]</span> txt <span class="token operator">=</span> File<span class="token punctuation">.</span><span class="token function">ReadAllLines</span><span class="token punctuation">(</span>FileName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//全局变量</span>
+        <span class="token keyword">private</span> <span class="token keyword">int</span><span class="token punctuation">[</span><span class="token punctuation">,</span><span class="token punctuation">]</span> myArray<span class="token punctuation">;</span><span class="token comment">//存放地图的数组</span>
+        <span class="token keyword">private</span> <span class="token keyword">int</span> row_num <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">,</span> col_num <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> <span class="token comment">//第n关的行数和列数</span>
+        <span class="token keyword">public</span> <span class="token keyword">int</span> row_start <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">,</span> row_end <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span><span class="token comment">//第n关的开始和结束行数</span>
+        <span class="token keyword">private</span> string<span class="token punctuation">[</span><span class="token punctuation">]</span> txt_n<span class="token punctuation">;</span>
+        internal <span class="token keyword">int</span> flag_last <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+        <span class="token keyword">private</span> <span class="token keyword">int</span> Level <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span><span class="token comment">//关卡数</span>
+</code></pre>
+<p><strong>6.增加必要注释</strong><br>
+补充一些必要的注释，删减部分无用注释。</p>
+</div>
+</body>
+
+</html>

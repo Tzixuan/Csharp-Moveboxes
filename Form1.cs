@@ -12,69 +12,59 @@ using System.IO;
 
 namespace MoveBoxes
 {
+    static class constant
+    {
+        //空地/墙/箱子
+        public const int BLANK = 0, WALL = 1, BOX = 3, DESTINATION = 4, WORKER = 6;
+        //箱子与目的地重合/人与目的地重合
+        public const int BOX_DES = 7, WOR_DES = 9;
+        public const int EDGE = 30;
+    }
     public partial class Form1 : Form
     {
+        //图片文件名
+        public static string imgName = "1";
+        public static string imgFileName = imgName + ".png";
+        //地图文件名
+        public static string FileName = ".\\map\\configurations.txt";
+        private string[] txt = File.ReadAllLines(FileName);
+        //全局变量
+        private int[,] myArray;//存放地图的数组
+        private int row_num = 0, col_num = 0; //第n关的行数和列数
+        public int row_start = 0, row_end = 0;//第n关的开始和结束行数
+        private string[] txt_n;
+        internal int flag_last = 0;
+        private int Level = 1;//关卡数
+        private int seq = -1;
         public Form1()
         {
             InitializeComponent();
         }
         public Bitmap DrawMap(int[,] myArray)
         {
-            //0空地 1墙 3箱 4子目的地 6人 7箱子与目的地重合 9人与目的地重合
-            pictureBox1.Width = myArray.GetLength(1) * 30;
-            pictureBox1.Height = myArray.GetLength(0) * 30;
+            //读取地图数组的第一维和第二维，绘制地图
+            pictureBox1.Width = myArray.GetLength(1) * constant.EDGE;
+            pictureBox1.Height = myArray.GetLength(0) * constant.EDGE;
             Bitmap bit = new Bitmap(pictureBox1.Width, pictureBox1.Height);
             Graphics g = Graphics.FromImage(bit);
             SolidBrush redBrush = new SolidBrush(Color.Red);
-            Image image = new Bitmap("worker.png");
-            for (int i = 0; i < myArray.GetLength(0); i++)
+            Image image = new Bitmap(imgFileName);
+            //绘制地图
+            for (int row = 0; row < myArray.GetLength(0); row++)
             {
-                for (int j = 0; j < myArray.GetLength(1); j++)
+                for (int col = 0; col < myArray.GetLength(1); col++)
                 {
-                    if (myArray[i, j] == 1)
-                    {
-                        image = new Bitmap("wall.png");
-                        g.DrawImage(image, j * 30, i * 30, 30, 30);
-                    }
-                    if (myArray[i, j] == 6)
-                    {
-                        image = new Bitmap("worker.png");
-                        g.DrawImage(image, j * 30, i * 30, 30, 30);
-                    }
-                    if (myArray[i, j] == 3)
-                    {
-                        image = new Bitmap("box.png");
-                        g.DrawImage(image, j * 30, i * 30, 30, 30);
-                    }
-                    if (myArray[i, j] == 0)
-                    {
-                        image = new Bitmap("land.png");
-                        g.DrawImage(image, j * 30, i * 30, 30, 30);
-                    }
-                    if (myArray[i, j] == 4)
-                    {
-                        image = new Bitmap("dest.png");
-                        g.DrawImage(image, j * 30, i * 30, 30, 30);
-                    }
-                    if (myArray[i, j] == 9)
-                    {
-                        image = new Bitmap("WoD.png");
-                        g.DrawImage(image, j * 30, i * 30, 30, 30);
-                    }
-                    if (myArray[i, j] == 7)
-                    {
-                        image = new Bitmap("BoD.png");
-                        g.DrawImage(image, j * 30, i * 30, 30, 30);
-                    }
+                    imgName = myArray[row, col].ToString();
+                    imgFileName = imgName + ".png";
+                    image = new Bitmap(imgFileName);
+                    g.DrawImage(image, col * constant.EDGE, row * constant.EDGE, constant.EDGE, constant.EDGE);
                 }
             }
             return bit;
         }
-        public string FileName = ".\\map\\configurations.txt";
-        private string[] txt = File.ReadAllLines(".\\map\\configurations.txt");
-        //疑问 这里直接写File.ReadAllLines(FileName)报错？
         public void Form1_Load(object sender, EventArgs e)
         {
+            //找不到地图文件抛出异常
             try { txt = File.ReadAllLines(FileName); }
             catch (FileNotFoundException q)
             {
@@ -84,39 +74,33 @@ namespace MoveBoxes
             }
             init_data();
         }
-        private int[,,] myArray_old;
-        private int[,] myArray;
-        private int row_num = 0, col_num = 0; //第n关的行数和列数
-        public int[,] ReadMap(string[] txt) 
+        public int[,] ReadMap(string[] txt)
         {
             //将text file里的第n关map数据写入一个integer array中
             string[] array0 = txt[0].Split(',');
             col_num = array0.Length;
             var array = new string[row_num, col_num];
-            for (int i = 0; i < row_num; i++)
+            for (int row = 0; row < row_num; row++)
             {
-                string[] arrayi = txt[i].Split(',');
-                for (int j = 0; j < col_num; j++)
+                string[] arrayi = txt[row].Split(',');
+                for (int col = 0; col < col_num; col++)
                 {
-                    array.SetValue(arrayi[j], i, j);
+                    array.SetValue(arrayi[col], row, col);
                 }
             }
-
             int[,] array1 = new int[row_num, col_num];
-            for (int i = 0; i < row_num; i++)
+            for (int row = 0; row < row_num; row++)
             {
-                for (int j = 0; j < col_num; j++)
+                for (int col = 0; col < col_num; col++)
                 {
-                    int.TryParse(array[i, j], result: out array1[i, j]);
+                    int.TryParse(array[row, col], result: out array1[row, col]);
                 }
             }
             //初始化存储撤销数据的数组
-            myArray_old = new int[500, row_num, col_num];
-
+            int[,,] myArray_old = new int[500, row_num, col_num];
             return array1;
         }
-        public int row_start = 0, row_end = 0; //第n关的开始和结束行数
-        private void Level_Regenerate() 
+        private void Level_Regenerate()
         {
             //更新某关数据 （从array到txt）
             List<string> lines = txt.ToList<string>();
@@ -127,7 +111,7 @@ namespace MoveBoxes
             }
             else
             {
-                for (int i = this.row_start; i < this.row_end; i++)
+                for (int row = this.row_start; row < this.row_end; row++)
                 {
                     lines.RemoveAt(this.row_start); //删除第 row_start~row_end 行
                 }
@@ -135,33 +119,29 @@ namespace MoveBoxes
             string[,] array = new string[myArray.GetLength(0), myArray.GetLength(1)];
             string[] arrayi = new string[myArray.GetLength(1)];
             string[] arrays = new string[myArray.GetLength(0)];
-            for (int i = 0; i < myArray.GetLength(0); i++)
+            for (int row = 0; row < myArray.GetLength(0); row++)
             {
-                for (int j = 0; j < myArray.GetLength(1); j++)
+                for (int col = 0; col < myArray.GetLength(1); col++)
                 {
-                    array[i, j] = myArray[i, j].ToString();
-                    arrayi.SetValue(array[i, j], j);
+                    array[row, col] = myArray[row, col].ToString();
+                    arrayi.SetValue(array[row, col], col);
                 }
-                arrays[i] = string.Join(",", arrayi);
+                arrays[row] = string.Join(",", arrayi);
             }
-            for (int i = this.row_start; i < this.row_start + myArray.GetLength(0); i++)
+            for (int row = this.row_start; row < this.row_start + myArray.GetLength(0); row++)
             {
-                lines.Insert(i, arrays[i - this.row_start]); //插入新行
+                lines.Insert(row, arrays[row - this.row_start]); //插入新行
             }
             this.row_end = this.row_start + myArray.GetLength(0);
             txt = lines.ToArray();
         }
-        private string[] txt_n;
-        internal int flag_last = 0;
         public string[] ExtractLines(string[] txt, int n)
         {
             //提取第n关数据
             string array_s = "//";
-
             //获取开始和结束行
             int num_slash = 0;
             row_start = 0; row_end = 0; row_num = 0; flag_last = 0;
-
             for (int row = 0; row < txt.Length; row++)
             {
                 if (txt[row].Contains(array_s))
@@ -183,7 +163,6 @@ namespace MoveBoxes
                 flag_last = 1;
                 return null;
             }
-
             //判断是否为最后一关
             if (row_end == 0)
             {
@@ -191,18 +170,14 @@ namespace MoveBoxes
                 flag_last = 1;
             }
             row_num = row_end - row_start;
-
             //为新的array赋值
             txt_n = new string[row_num];
-            for (int i = 0; i < row_num; i++)
+            for (int row = 0; row < row_num; row++)
             {
-                txt_n[i] = string.Copy(txt[row_start + i]);
+                txt_n[row] = string.Copy(txt[row_start + row]);
             }
-
             return txt_n;
         }
-        private int Level = 1;//关卡数
-        private int seq = -1;
         public void init_data()
         {
             txtLeveln.Text = Level.ToString();
@@ -214,358 +189,117 @@ namespace MoveBoxes
             }
             seq = -1;
         }
-        private int i, j;
-
         private void RestartToolStripMenuItem_Click(object sender, EventArgs e)
         {
             init_data();
-
         }
 
-        private void Keydown(object sender, KeyEventArgs e) 
+        private void Keydown(object sender, KeyEventArgs e)
         {
             //按下按键时操作
+            int i = 0, j = 0;
+            int now_row = 0, now_col = 0,next_row=0,next_col=0,to_row=0,to_col=0;
             //得到人的坐标
             for (int x = 0; x < row_num; x++)
             {
                 for (int y = 0; y < col_num; y++)
                 {
-                    if (myArray[x, y] == 6 || myArray[x, y] == 9)
+                    if (myArray[x, y] == constant.WORKER || myArray[x, y] == constant.WOR_DES)
                     {
                         i = x;
                         j = y;
                     }
                 }
-
             }
             //接收按键
             switch (e.KeyCode)
             {
-                case Keys.Up:
-                    if (myArray[i - 1, j] == 0)
-                    {
-                        myArray[i - 1, j] = 6;
-                        if (myArray[i, j] == 6)
-                        {
-                            myArray[i, j] = 0;
-                        }
-                        else
-                        {
-                            myArray[i, j] = 4;
-                        }
-                    }
-                    else if (myArray[i - 1, j] == 3 && myArray[i - 2, j] == 0)
-                    {
-                        myArray[i - 1, j] = 6;
-                        myArray[i - 2, j] = 3;
-                        if (myArray[i, j] == 6)
-                        {
-                            myArray[i, j] = 0;
-                        }
-                        else
-                        {
-                            myArray[i, j] = 4;
-                        }
-                    }
-                    else if (myArray[i - 1, j] == 4)
-                    {
-                        myArray[i - 1, j] = 9;
-                        if (myArray[i, j] == 6)
-                        {
-                            myArray[i, j] = 0;
-                        }
-                        else
-                        {
-                            myArray[i, j] = 4;
-                        }
-                    }
-                    else if (myArray[i - 1, j] == 7 && myArray[i - 2, j] == 0)
-                    {
-                        myArray[i - 1, j] = 9;
-                        myArray[i - 2, j] = 3;
-                        if (myArray[i, j] == 6)
-                        {
-                            myArray[i, j] = 0;
-                        }
-                        else
-                        {
-                            myArray[i, j] = 4;
-                        }
+                case Keys.Up: { now_row = i; next_row = i - 1;to_row = i - 2; next_col=now_col = to_col = j; break; }
+                case Keys.Left: { now_row=next_row=to_row = i; now_col = j; next_col = j - 1;to_col = j - 2; break; }
+                case Keys.Down: { now_row = i; next_row = i + 1; to_row = i + 2; next_col = now_col = to_col = j; break; }
+                case Keys.Right: { now_row = next_row = to_row = i; now_col = j; next_col = j + 1; to_col = j + 2; break; }
+            }
+            if (myArray[next_row, next_col] == constant.BLANK)
+            {
+                myArray[next_row, next_col] = constant.WORKER;
+                if (myArray[now_row, now_col] == constant.WORKER)
+                {
+                    myArray[now_row, now_col] = constant.BLANK;
+                }
+                else
+                {
+                    myArray[now_row, now_col] = constant.DESTINATION;
+                }
+            }
+            else if (myArray[next_row, next_col] == constant.BOX && myArray[to_row, to_col] == constant.BLANK)
+            {
+                myArray[next_row, next_col] = constant.WORKER;
+                myArray[to_row, to_col] = constant.BOX;
+                if (myArray[now_row, now_col] == constant.WORKER)
+                {
+                    myArray[now_row, now_col] = constant.BLANK;
+                }
+                else
+                {
+                    myArray[now_row, now_col] = constant.DESTINATION;
+                }
+            }
+            else if (myArray[next_row, next_col] == constant.DESTINATION)
+            {
+                myArray[next_row, next_col] = constant.WOR_DES;
+                if (myArray[now_row, now_col] == constant.WORKER)
+                {
+                    myArray[now_row, now_col] = constant.BLANK;
+                }
+                else
+                {
+                    myArray[now_row, now_col] = constant.DESTINATION;
+                }
+            }
+            else if (myArray[next_row, next_col] == constant.BOX_DES && myArray[to_row, to_col] == constant.BLANK)
+            {
+                myArray[next_row, next_col] = constant.WOR_DES;
+                myArray[to_row, to_col] = constant.BOX;
+                if (myArray[now_row, now_col] == constant.WORKER)
+                {
+                    myArray[now_row, now_col] = constant.BLANK;
+                }
+                else
+                {
+                    myArray[now_row, now_col] = constant.DESTINATION;
+                }
 
-                    }
-                    else if (myArray[i - 1, j] == 3 && myArray[i - 2, j] == 4)
-                    {
-                        myArray[i - 1, j] = 6;
-                        myArray[i - 2, j] = 7;
-                        if (myArray[i, j] == 6)
-                        {
-                            myArray[i, j] = 0;
-                        }
-                        else
-                        {
-                            myArray[i, j] = 4;
-                        }
-                    }
-                    else if (myArray[i - 1, j] == 7 && myArray[i - 2, j] == 4)
-                    {
-                        myArray[i - 1, j] = 9;
-                        myArray[i - 2, j] = 7;
-                        if (myArray[i, j] == 6)
-                        {
-                            myArray[i, j] = 0;
-                        }
-                        else
-                        {
-                            myArray[i, j] = 4;
-                        }
-                    }  
-                    break;
-                case Keys.Left:
-                    if (myArray[i, j - 1] == 0)
-                    {
-                        myArray[i, j - 1] = 6;
-                        if (myArray[i, j] == 6)
-                        {
-                            myArray[i, j] = 0;
-                        }
-                        else
-                        {
-                            myArray[i, j] = 4;
-                        }
-                    }
-                    else if (myArray[i, j - 1] == 3 && myArray[i, j - 2] == 0)
-                    {
-                        myArray[i, j - 1] = 6;
-                        myArray[i, j - 2] = 3;
-                        if (myArray[i, j] == 6)
-                        {
-                            myArray[i, j] = 0;
-                        }
-                        else
-                        {
-                            myArray[i, j] = 4;
-                        }
-                    }
-                    else if (myArray[i, j - 1] == 4)
-                    {
-                        myArray[i, j - 1] = 9;
-                        if (myArray[i, j] == 6)
-                        {
-                            myArray[i, j] = 0;
-                        }
-                        else
-                        {
-                            myArray[i, j] = 4;
-                        }
-                    }
-                    else if (myArray[i, j - 1] == 7 && myArray[i, j - 2] == 0)
-                    {
-                        myArray[i, j - 1] = 9;
-                        myArray[i, j - 2] = 3;
-                        if (myArray[i, j] == 6)
-                        {
-                            myArray[i, j] = 0;
-                        }
-                        else
-                        {
-                            myArray[i, j] = 4;
-                        }
-
-                    }
-                    else if (myArray[i, j - 1] == 3 && myArray[i, j - 2] == 4)
-                    {
-                        myArray[i, j - 1] = 6;
-                        myArray[i, j - 2] = 7;
-                        if (myArray[i, j] == 6)
-                        {
-                            myArray[i, j] = 0;
-                        }
-                        else
-                        {
-                            myArray[i, j] = 4;
-                        }
-                    }
-                    else if (myArray[i, j - 1] == 7 && myArray[i, j - 2] == 4)
-                    {
-                        myArray[i, j - 1] = 9;
-                        myArray[i, j - 2] = 7;
-                        if (myArray[i, j] == 6)
-                        {
-                            myArray[i, j] = 0;
-                        }
-                        else
-                        {
-                            myArray[i, j] = 4;
-                        }
-                    }
-                    
-                    break;
-                case Keys.Down:
-                    if (myArray[i + 1, j] == 0)
-                    {
-                        myArray[i + 1, j] = 6;
-                        if (myArray[i, j] == 6)
-                        {
-                            myArray[i, j] = 0;
-                        }
-                        else
-                        {
-                            myArray[i, j] = 4;
-                        }
-                    }
-                    else if (myArray[i + 1, j] == 3 && myArray[i + 2, j] == 0)
-                    {
-                        myArray[i + 1, j] = 6;
-                        myArray[i + 2, j] = 3;
-                        if (myArray[i, j] == 6)
-                        {
-                            myArray[i, j] = 0;
-                        }
-                        else
-                        {
-                            myArray[i, j] = 4;
-                        }
-                    }
-                    else if (myArray[i + 1, j] == 4)
-                    {
-                        myArray[i + 1, j] = 9;
-                        if (myArray[i, j] == 6)
-                        {
-                            myArray[i, j] = 0;
-                        }
-                        else
-                        {
-                            myArray[i, j] = 4;
-                        }
-                    }
-                    else if (myArray[i + 1, j] == 7 && myArray[i + 2, j] == 0)
-                    {
-                        myArray[i + 1, j] = 9;
-                        myArray[i + 2, j] = 3;
-                        if (myArray[i, j] == 6)
-                        {
-                            myArray[i, j] = 0;
-                        }
-                        else
-                        {
-                            myArray[i, j] = 4;
-                        }
-
-                    }
-                    else if (myArray[i + 1, j] == 3 && myArray[i + 2, j] == 4)
-                    {
-                        myArray[i + 1, j] = 6;
-                        myArray[i + 2, j] = 7;
-                        if (myArray[i, j] == 6)
-                        {
-                            myArray[i, j] = 0;
-                        }
-                        else
-                        {
-                            myArray[i, j] = 4;
-                        }
-                    }
-                    else if (myArray[i + 1, j] == 7 && myArray[i + 2, j] == 4)
-                    {
-                        myArray[i + 1, j] = 9;
-                        myArray[i + 2, j] = 7;
-                        if (myArray[i, j] == 6)
-                        {
-                            myArray[i, j] = 0;
-                        }
-                        else
-                        {
-                            myArray[i, j] = 4;
-                        }
-                    } 
-                    break;
-                case Keys.Right:
-                    if (myArray[i, j + 1] == 0)
-                    {
-                        myArray[i, j + 1] = 6;
-                        if (myArray[i, j] == 6)
-                        {
-                            myArray[i, j] = 0;
-                        }
-                        else
-                        {
-                            myArray[i, j] = 4;
-                        }
-                    }
-                    else if (myArray[i, j + 1] == 3 && myArray[i, j + 2] == 0)
-                    {
-                        myArray[i, j + 1] = 6;
-                        myArray[i, j + 2] = 3;
-                        if (myArray[i, j] == 6)
-                        {
-                            myArray[i, j] = 0;
-                        }
-                        else
-                        {
-                            myArray[i, j] = 4;
-                        }
-                    }
-                    else if (myArray[i, j + 1] == 4)
-                    {
-                        myArray[i, j + 1] = 9;
-                        if (myArray[i, j] == 6)
-                        {
-                            myArray[i, j] = 0;
-                        }
-                        else
-                        {
-                            myArray[i, j] = 4;
-                        }
-                    }
-                    else if (myArray[i, j + 1] == 7 && myArray[i, j + 2] == 0)
-                    {
-                        myArray[i, j + 1] = 9;
-                        myArray[i, j + 2] = 3;
-                        if (myArray[i, j] == 6)
-                        {
-                            myArray[i, j] = 0;
-                        }
-                        else
-                        {
-                            myArray[i, j] = 4;
-                        }
-
-                    }
-                    else if (myArray[i, j + 1] == 3 && myArray[i, j + 2] == 4)
-                    {
-                        myArray[i, j + 1] = 6;
-                        myArray[i, j + 2] = 7;
-                        if (myArray[i, j] == 6)
-                        {
-                            myArray[i, j] = 0;
-                        }
-                        else
-                        {
-                            myArray[i, j] = 4;
-                        }
-                    }
-                    else if (myArray[i, j + 1] == 7 && myArray[i, j + 2] == 4)
-                    {
-                        myArray[i, j + 1] = 9;
-                        myArray[i, j + 2] = 7;
-                        if (myArray[i, j] == 6)
-                        {
-                            myArray[i, j] = 0;
-                        }
-                        else
-                        {
-                            myArray[i, j] = 4;
-                        }
-                    }
-                    //else label2.Text = "无效操作";
-                    break;
+            }
+            else if (myArray[next_row, next_col] == constant.BOX && myArray[to_row, to_col] == constant.DESTINATION)
+            {
+                myArray[next_row, next_col] = constant.WORKER;
+                myArray[to_row, to_col] = constant.BOX_DES;
+                if (myArray[now_row, now_col] == constant.WORKER)
+                {
+                    myArray[now_row, now_col] = constant.BLANK;
+                }
+                else
+                {
+                    myArray[now_row, now_col] = constant.DESTINATION;
+                }
+            }
+            else if (myArray[next_row, next_col] == constant.BOX_DES && myArray[to_row, to_col] == constant.DESTINATION)
+            {
+                myArray[next_row, next_col] = constant.WOR_DES;
+                myArray[to_row, to_col] = constant.BOX_DES;
+                if (myArray[now_row, now_col] == constant.WORKER)
+                {
+                    myArray[now_row, now_col] = constant.BLANK;
+                }
+                else
+                {
+                    myArray[now_row, now_col] = constant.DESTINATION;
+                }
             }
             pictureBox1.Image = DrawMap(myArray);
             if (isfinish())
             {
-                //MessageBox.Show("恭喜你顺利过关", "提示");   
-               btnNextLevel_Click(null, null);
-                //Thread.Sleep(2000);
+                btnNextLevel_Click(null, null);
             }
             return;
         }
@@ -579,10 +313,10 @@ namespace MoveBoxes
         {
             //完成本关时
             bool bfinish = true;
-            for (int i = 0; i < row_num; i++)
-                for (int j = 0; j < col_num; j++)
-                    if (myArray[i, j] == 4
-                        || myArray[i, j] == 9)
+            for (int row = 0; row < row_num; row++)
+                for (int col = 0; col < col_num; col++)
+                    if (myArray[row, col] == constant.DESTINATION
+                        || myArray[row, col] == constant.WOR_DES)
                         bfinish = false;
             return bfinish;
         }
